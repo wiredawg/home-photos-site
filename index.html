@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Home Photos Site</title>
+    <title>Local/Private site</title>
 
-    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
     <style>
 
         body {
-            padding-top: 50px;
+            padding-top: 10px;
             background-color: #eee;
             margin-bottom: 60px;
         }
@@ -43,15 +43,44 @@
             text-align: center;
         }
 
+        /*
+        .carousel-inner {
+            height: 650px;
+        }
+
+        .carousel-inner .item {
+            overflow: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .carousel-inner .item img {
+            width: 100%;
+            min-height: 100%;
+            max-height: 100%;
+        }
+        */
+
+        .carousel-inner .item img {
+            width: 100%;
+        }
+
+        .carousel-inner .item::-webkit-scrollbar { 
+                display: none; 
+        }
+
     </style>
 
   </head>
   <body>
 
-      <div class="container">
+      <div  class="container">
           <div class="row">
-              <div class="col-sm-offset-5 col-sm-2 text-center">
+              <div class="text-center">
+              <a href="/index.html" class="btn btn-default" role="button">HOME</a>
                   <div class="btn-group" data-toggle="buttons">
+                      <label id="rst-button"  class="btn btn-default center-block">Reset</label>
+                      <label id="recall-button" class="btn btn-default center-block">Recall</label>
                       <label id="rand-button" class="btn btn-default center-block">Random</label>
                   </div>
               </div>
@@ -62,8 +91,8 @@
                   <div id="myCarousel" class="carousel slide drop-shadow" data-ride="carousel">
 
                       <div class="carousel-inner">
-                          <div class="item active" data-slide-number="0"> </div>
-                          <div class="item"        data-slide-number="1"> </div>
+                          <div class="item active"> </div>
+                          <div class="item"       > </div>
                       </div>
 
                       <!-- Left and right controls -->
@@ -92,51 +121,64 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/vendor/jquery/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="/vendor/jquery/jquery.min.js"><\/script>')</script>
-    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../vendor/jquery/jquery.min.js"><\/script>')</script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="purls.js"></script>
 
     <script>
         var ptr  = 0;
+        var last_ptr = ptr;
         var max  = purls.length;
+        var next_url = purls[ptr];
+
+        function update_ptr(v) {
+            last_ptr = ptr;
+            // Roll around if needed
+            v = (v >= 0) ? v : (max + (v % max));
+            ptr = Math.abs(v)%max;
+        }
+
+        function update_carousel(v) {
+            update_ptr(v);
+            var url = purls[ptr];
+            $('.item.active').html('<img src="'+url+'"/>');
+            console.log("idx: " + v );
+        }
+
+        // when the carousel slides, load the ajax content
+        $('#myCarousel').bind('slide.bs.carousel', function (ev) {
+            var target = $(ev.relatedTarget);
+            if ( ev.direction == "right" ) {
+                update_ptr(ptr+1);
+            } else {
+                update_ptr( ptr-1 );
+            }
+            var url = purls[ptr];
+            target.html('<img src="'+url+'"/>');
+            console.log("idx: " + ptr );
+        });
+
+        $('#rand-button').on('click', function(e) {
+            update_carousel( Math.floor((Math.random()*max)+1) );
+        });
+
+        $('#recall-button').on('click', function(e) {
+            update_carousel(last_ptr);
+        });
+
+        $('#rst-button').on('click', function(e) {
+            update_carousel(0);
+        });
+
+        // load first slide
+        first_url = purls[ptr];
+        $('.item.active').append("<img src=\""+first_url+"\"/>");
 
         $('#myCarousel').carousel({
             interval:false // remove interval for manual sliding
         });
 
-        // when the carousel slides, load the ajax content
-        $('#myCarousel').bind('slide.bs.carousel', function (o) {
-            if ( o.direction == "left" ) {
-                ptr = (++ptr % max);
-            } else {
-                // Roll around if needed
-                ptr--;
-                if ( ptr < 0 ) {
-                    ptr = max + ( ptr % max );
-                } 
-            }
-        });
-
-        $('#myCarousel').on('slid.bs.carousel', function (o) {
-            update_carousel( ptr );
-        });
-
-        $('#rand-button').on('click', function(e) {
-            // update the pointer to a random image
-            update_carousel( Math.floor((Math.random() * max) + 1 ));
-        });
-
-        function update_carousel(v) {
-            ptr = Math.abs(v)%max;
-            var url = purls[ptr];
-            $('.item').html('<img src="'+url+'"/>');
-            console.log("idx: " + v );
-        }
-
-        // load first slide
-        first_url = purls[ptr];
-        $('[data-slide-number=0]').append("<img src=\""+first_url+"\"/>");
     </script>
 
 
