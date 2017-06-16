@@ -1,7 +1,11 @@
 # Basic Photo Site
 
 This page is a very simple usage of a bootstrap carousel that loads
-photos dynamically from a list of urls.
+photos dynamically from a list of urls. As the user navigates the 
+carousel a pointer keeps track of the location in the list. If the
+user clicks on the right arrow, the pointer will increment. Otherwise,
+the pointer will decrement. A button is also available to random update
+the photo and location in the list where the pointer is pointing.
 
 # Setup
 
