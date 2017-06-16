@@ -124,7 +124,7 @@
 
         $('#rand-button').on('click', function(e) {
             // update the pointer to a random image
-            update_carousel( Math.round(Math.random()*100)%max );
+            update_carousel( Math.floor((Math.random() * max) + 1 ));
         });
 
         function update_carousel(v) {
