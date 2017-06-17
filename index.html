@@ -139,14 +139,9 @@
             ptr = Math.abs(v)%max;
         }
 
-        function update_carousel(v) {
-            update_ptr(v);
-            var url = purls[ptr];
-            $('.item.active').html('<img src="'+url+'"/>');
-            console.log("idx: " + v );
-        }
-
-        // when the carousel slides, load the ajax content
+        //===========================================================
+        // Carousel Transition Handler
+        //
         $('#myCarousel').bind('slide.bs.carousel', function (ev) {
             var target = $(ev.relatedTarget);
             if ( ev.direction == "right" ) {
@@ -159,24 +154,35 @@
             console.log("idx: " + ptr );
         });
 
+        //===========================================================
+        // Button Handlers
+        //
+        function set_active_photo(v) {
+            update_ptr(v);
+            var url = purls[ptr];
+            $('.item.active').html('<img src="'+url+'"/>');
+            console.log("idx: " + v );
+        }
+
         $('#rand-button').on('click', function(e) {
-            update_carousel( Math.floor((Math.random()*max)+1) );
+            set_active_photo( Math.floor((Math.random()*max)+1) );
         });
 
         $('#recall-button').on('click', function(e) {
-            update_carousel(last_ptr);
+            set_active_photo(last_ptr);
         });
 
         $('#rst-button').on('click', function(e) {
-            update_carousel(0);
+            set_active_photo(0);
         });
 
-        // load first slide
-        first_url = purls[ptr];
-        $('.item.active').append("<img src=\""+first_url+"\"/>");
+        //===========================================================
+        // Initialization
+        //
+        $('.item.active').append("<img src=\""+purls[ptr]+"\"/>");
 
         $('#myCarousel').carousel({
-            interval:false // remove interval for manual sliding
+            interval: false
         });
 
     </script>
